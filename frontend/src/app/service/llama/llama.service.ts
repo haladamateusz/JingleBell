@@ -21,7 +21,7 @@ export class LlamaService {
         this.lastQuestionAsked.next(question);
       })
     );
-    //this.httpClient.post<LlamaResponse>('/askQuestion', { question, userId });
+    //this.httpClient.post<LlamaResponse>('<PASTE_URL_HERE>', { question, userId });
   }
 
   sendFeedback(feedback: string, userId: string): Observable<boolean> {
@@ -33,6 +33,6 @@ export class LlamaService {
       results: this.lastResults.getValue()
     });
     return of(true);
-    // this.httpClient.post<LlamaResponse>('/sendFeedback', { feedback, userId, previousQuestion, previousResults });
+    // this.httpClient.post<LlamaResponse>('<PASTE_URL_HERE>', { feedback, userId, previousQuestion, previousResults });
   }
 }

@@ -1,121 +1,123 @@
-<p>
+<p class="mb-0">
   <mat-toolbar color="primary">
     <h1>{{ title }}</h1>
   </mat-toolbar>
 </p>
-
-<div class="container">
-  <div class="row">
-    <div class="offset-md-2 col-md-8 text-center">
-      <form (ngSubmit)="sendQuestion()" class="example-form">
-        <mat-form-field color="accent" class="example-full-width">
-          <mat-label>Question</mat-label>
-          <input
-            name="question"
-            [(ngModel)]="question"
-            matInput
-            placeholder="Type what are you looking for ex. Printing" />
-        </mat-form-field>
-        <button type="submit" color="accent" mat-raised-button class="text-white">Submit</button>
-      </form>
-    </div>
-  </div>
-</div>
-
-<ng-container *ngIf="dataSource.length">
-  <div class="container my-5">
+<main>
+  <div class="container">
     <div class="row">
-      <div class="offset-md-2 col-md-8">
-        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-          <ng-container matColumnDef="description">
-            <th mat-header-cell *matHeaderCellDef>Short description</th>
-            <td mat-cell *matCellDef="let element">
-              {{ element.description | shorten: visibleCharacters }}
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="type">
-            <th mat-header-cell *matHeaderCellDef>Type</th>
-            <td mat-cell *matCellDef="let element">{{ element.type }}</td>
-          </ng-container>
-
-          <ng-container matColumnDef="language">
-            <th mat-header-cell *matHeaderCellDef>Language</th>
-            <ng-container *ngIf="!smallScreen">
-              <td mat-cell *matCellDef="let element"> {{ element.language}}</td>
-            </ng-container>
-            <ng-container *ngIf="smallScreen">
-              <td style="font-size:32px" class="text-center" mat-cell *matCellDef="let element">
-                {{ emojiHashMap.get(element.language)}}</td>
-            </ng-container>
-          </ng-container>
-
-          <ng-container matColumnDef="url">
-            <th mat-header-cell *matHeaderCellDef>Link</th>
-            <td mat-cell *matCellDef="let element">
-              <a [href]="element.url" target="”_blank”">
-                <button color="primary" mat-stroked-button>
-                  {{ element.type === 'PDF' ? 'Download' : 'View' }}
-                </button>
-              </a>
-            </td>
-          </ng-container>
-
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-        </table>
+      <div class="offset-md-2 col-md-8 text-center">
+        <form (ngSubmit)="sendQuestion()" class="example-form mt-3">
+          <mat-form-field color="primary" class="example-full-width">
+            <mat-label>Question</mat-label>
+            <input
+              name="question"
+              [(ngModel)]="question"
+              matInput
+              placeholder="Type what are you looking for ex. Printing" />
+          </mat-form-field>
+          <button type="submit" color="primary" mat-raised-button class="text-white">Submit</button>
+        </form>
       </div>
     </div>
-    <ng-container *ngIf="showFeedback">
-      <div class="row mt-5">
-        <div class="offset-md-4 col-md-4 text-center">
-          <p>Are you satisfied with the results?</p>
-        </div>
-        <div class="offset-md-5 col-md-1 my-2">
-          <button
-            (click)="sendFeedback(FEEDBACK.OKAY)"
-            color="accent"
-            mat-flat-button
-            class="text-right text-white w-100">
-            <mat-icon class="me-0" fontIcon="thumb_up"></mat-icon>
-          </button>
-        </div>
-        <div class="col-md-1 my-2">
-          <button
-            (click)="showFeedback = false; showDetailedNegativeFeedback = true"
-            color="primary"
-            mat-flat-button
-            class="w-100">
-            <mat-icon class="me-0" fontIcon="thumb_down"></mat-icon>
-          </button>
-        </div>
-      </div>
-    </ng-container>
-
-    <ng-container *ngIf="showDetailedNegativeFeedback">
-      <div class="row my-5">
-        <div class="offset-md-4 col-md-4 text-center">
-          <p>What went wrong?</p>
-        </div>
-        <div class="offset-md-4 col-md-2">
-          <button
-            (click)="sendFeedback(FEEDBACK.BAD_DOCUMENTS)"
-            color="primary"
-            mat-stroked-button
-            class="text-right w-100 my-2">
-            Bad Documents
-          </button>
-        </div>
-        <div class="col-md-2">
-          <button
-            (click)="sendFeedback(FEEDBACK.BAD_GPT)"
-            color="primary"
-            mat-stroked-button
-            class="w-100 my-2">
-            Bad GPT results
-          </button>
-        </div>
-      </div>
-    </ng-container>
   </div>
-</ng-container>
+
+  <ng-container *ngIf="dataSource.length">
+    <div class="container my-5">
+      <div class="row">
+        <div class="offset-md-2 col-md-8">
+          <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+            <ng-container matColumnDef="description">
+              <th mat-header-cell *matHeaderCellDef>Short description</th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.description | shorten: visibleCharacters }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="type">
+              <th mat-header-cell *matHeaderCellDef>Type</th>
+              <td mat-cell *matCellDef="let element">{{ element.type }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="language">
+              <th mat-header-cell *matHeaderCellDef>Language</th>
+              <ng-container *ngIf="!smallScreen">
+                <td mat-cell *matCellDef="let element">{{ element.language }}</td>
+              </ng-container>
+              <ng-container *ngIf="smallScreen">
+                <td style="font-size: 32px" class="text-center" mat-cell *matCellDef="let element">
+                  {{ emojiHashMap.get(element.language) }}
+                </td>
+              </ng-container>
+            </ng-container>
+
+            <ng-container matColumnDef="url">
+              <th mat-header-cell *matHeaderCellDef>Link</th>
+              <td mat-cell *matCellDef="let element">
+                <a [href]="element.url" target="”_blank”">
+                  <button color="primary" mat-stroked-button>
+                    {{ element.type === 'PDF' ? 'Download' : 'View' }}
+                  </button>
+                </a>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          </table>
+        </div>
+      </div>
+      <ng-container *ngIf="showFeedback">
+        <div class="row mt-5">
+          <div class="offset-md-4 col-md-4 text-center">
+            <p>Are you satisfied with the results?</p>
+          </div>
+          <div class="offset-md-5 col-md-1 my-2">
+            <button
+              (click)="sendFeedback(FEEDBACK.OKAY)"
+              color="accent"
+              mat-flat-button
+              class="text-right text-white w-100">
+              <mat-icon class="me-0" fontIcon="thumb_up"></mat-icon>
+            </button>
+          </div>
+          <div class="col-md-1 my-2">
+            <button
+              (click)="showFeedback = false; showDetailedNegativeFeedback = true"
+              color="primary"
+              mat-flat-button
+              class="w-100">
+              <mat-icon class="me-0" fontIcon="thumb_down"></mat-icon>
+            </button>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="showDetailedNegativeFeedback">
+        <div class="row my-5">
+          <div class="offset-md-4 col-md-4 text-center">
+            <p>What went wrong?</p>
+          </div>
+          <div class="offset-md-4 col-md-2">
+            <button
+              (click)="sendFeedback(FEEDBACK.BAD_DOCUMENTS)"
+              color="primary"
+              mat-stroked-button
+              class="text-right w-100 my-2">
+              Bad Documents
+            </button>
+          </div>
+          <div class="col-md-2">
+            <button
+              (click)="sendFeedback(FEEDBACK.BAD_GPT)"
+              color="primary"
+              mat-stroked-button
+              class="w-100 my-2">
+              Bad GPT results
+            </button>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </ng-container>
+</main>
