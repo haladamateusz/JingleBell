@@ -1,0 +1,26 @@
+@import './fonts.scss';
+
+$green-palette: (
+  50: #e8f5e9,
+  100: #c8e6c9,
+  200: #a5d6a7,
+  300: #81c784,
+  400: #66bb69,
+  500: #4caf4f,
+  600: #43a046,
+  700: #388e3b,
+  800: #2e7d31,
+  900: #1b5e1f,
+  contrast: (
+    50: $dark-primary-text,
+    100: $dark-primary-text,
+    200: $dark-primary-text,
+    300: $dark-primary-text,
+    400: $dark-primary-text,
+    500: $dark-primary-text,
+    600: $dark-primary-text,
+    700: $dark-primary-text,
+    800: $light-primary-text,
+    900: $light-primary-text
+  )
+);

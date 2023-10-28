@@ -1,0 +1,5 @@
+export enum FEEDBACK {
+  OKAY = 'OKAY',
+  BAD_DOCUMENTS = 'BAD_DOCUMENTS',
+  BAD_GPT = 'BAD_GPT'
+}
