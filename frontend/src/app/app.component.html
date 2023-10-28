@@ -6,7 +6,7 @@
 
 <div class="container">
   <div class="row">
-    <div class="offset-sm-3 col-sm-6 text-center">
+    <div class="offset-md-2 col-md-8 text-center">
       <form (ngSubmit)="sendQuestion()" class="example-form">
         <mat-form-field color="accent" class="example-full-width">
           <mat-label>Question</mat-label>
@@ -23,32 +23,33 @@
 </div>
 
 <ng-container *ngIf="dataSource.length">
-  <div class="container mt-5">
+  <div class="container my-5">
     <div class="row">
-      <div class="offset-sm-3 col-sm-6">
+      <div class="offset-md-2 col-md-8">
         <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-          <!--- Note that these columns can be defined in any order.
-              The actual rendered columns are set as a property on the row definition" -->
-
-          <!-- Position Column -->
           <ng-container matColumnDef="description">
             <th mat-header-cell *matHeaderCellDef>Short description</th>
-            <td mat-cell *matCellDef="let element">{{ element.description | shorten: 200 }}</td>
+            <td mat-cell *matCellDef="let element">
+              {{ element.description | shorten: visibleCharacters }}
+            </td>
           </ng-container>
 
-          <!-- Name Column -->
           <ng-container matColumnDef="type">
             <th mat-header-cell *matHeaderCellDef>Type</th>
             <td mat-cell *matCellDef="let element">{{ element.type }}</td>
           </ng-container>
 
-          <!-- Name Column -->
           <ng-container matColumnDef="language">
             <th mat-header-cell *matHeaderCellDef>Language</th>
-            <td mat-cell *matCellDef="let element">{{ element.language }}</td>
+            <ng-container *ngIf="!smallScreen">
+              <td mat-cell *matCellDef="let element"> {{ element.language}}</td>
+            </ng-container>
+            <ng-container *ngIf="smallScreen">
+              <td style="font-size:32px" class="text-center" mat-cell *matCellDef="let element">
+                {{ emojiHashMap.get(element.language)}}</td>
+            </ng-container>
           </ng-container>
 
-          <!-- Weight Column -->
           <ng-container matColumnDef="url">
             <th mat-header-cell *matHeaderCellDef>Link</th>
             <td mat-cell *matCellDef="let element">
@@ -67,10 +68,10 @@
     </div>
     <ng-container *ngIf="showFeedback">
       <div class="row mt-5">
-        <div class="offset-sm-4 col-sm-4 text-center">
+        <div class="offset-md-4 col-md-4 text-center">
           <p>Are you satisfied with the results?</p>
         </div>
-        <div class="offset-5 col-1">
+        <div class="offset-md-5 col-md-1 my-2">
           <button
             (click)="sendFeedback(FEEDBACK.OKAY)"
             color="accent"
@@ -79,7 +80,7 @@
             <mat-icon class="me-0" fontIcon="thumb_up"></mat-icon>
           </button>
         </div>
-        <div class="col-1">
+        <div class="col-md-1 my-2">
           <button
             (click)="showFeedback = false; showDetailedNegativeFeedback = true"
             color="primary"
@@ -92,25 +93,25 @@
     </ng-container>
 
     <ng-container *ngIf="showDetailedNegativeFeedback">
-      <div class="row mt-5">
-        <div class="offset-sm-4 col-sm-4 text-center">
+      <div class="row my-5">
+        <div class="offset-md-4 col-md-4 text-center">
           <p>What went wrong?</p>
         </div>
-        <div class="offset-4 col-2">
+        <div class="offset-md-4 col-md-2">
           <button
             (click)="sendFeedback(FEEDBACK.BAD_DOCUMENTS)"
             color="primary"
             mat-stroked-button
-            class="text-right w-100">
+            class="text-right w-100 my-2">
             Bad Documents
           </button>
         </div>
-        <div class="col-2">
+        <div class="col-md-2">
           <button
             (click)="sendFeedback(FEEDBACK.BAD_GPT)"
             color="primary"
             mat-stroked-button
-            class="w-100">
+            class="w-100 my-2">
             Bad GPT results
           </button>
         </div>

@@ -11,6 +11,9 @@ import { MatTableModule } from '@angular/material/table';
 import { ShortenPipe } from './pipe/shorten/shorten.pipe';
 import { MatIconModule } from '@angular/material/icon';
 import { FEEDBACK } from './models/feedback.enum';
+import { LayoutService } from './service/layout/layout.service';
+import { Observable } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-root',
@@ -35,19 +38,43 @@ export class AppComponent implements OnInit {
 
   llamaService = inject(LlamaService);
 
+  layoutService = inject(LayoutService);
+
+  layoutObserver = this.layoutService.observeMd().pipe(takeUntilDestroyed());
+
   sessionId = uuidv4();
 
   question = '';
 
   displayedColumns: string[] = ['description', 'type', 'language', 'url'];
 
+  visibleCharacters = 200;
+
   dataSource: LlamaResponse[] = [];
 
   showFeedback = false;
   showDetailedNegativeFeedback = false;
+  smallScreen = true;
+
+  emojiHashMap = new Map<string, string>([
+    ['English', '🇺🇸'],
+    ['French', '🇫🇷'],
+    ['German', '🇩🇪']
+  ]);
 
   ngOnInit() {
     console.log('current session id', this.sessionId);
+    this.layoutObserver.subscribe((isSmallScreen: boolean) => {
+      if (isSmallScreen) {
+        this.visibleCharacters = 60;
+        this.smallScreen = true;
+        this.displayedColumns = ['description', 'language', 'url'];
+      } else {
+        this.visibleCharacters = 200;
+        this.smallScreen = false;
+        this.displayedColumns = ['description', 'type', 'language', 'url'];
+      }
+    });
   }
 
   sendQuestion(): void {
