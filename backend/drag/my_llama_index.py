@@ -3,8 +3,9 @@ import openai
 from llama_index import download_loader
 from llama_index import VectorStoreIndex, SimpleDirectoryReader, ServiceContext
 from llama_index.llms import OpenAI
-from llama_hub.file.unstructured import UnstructuredReader
 import json
+import pathlib
+UnstructuredReader = download_loader('UnstructuredReader')
 
 class MyLlamaIndex:
     def __init__(self, data_dir, metadata_path) -> None:
@@ -14,10 +15,9 @@ class MyLlamaIndex:
         self.user_to_last_answer = {}
 
     def __get_vector_store_index(self, data_path):
-        os.environ["OPENAI_API_KEY"] = "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"
         openai.api_key = os.environ["OPENAI_API_KEY"]
         def format_file_metadata(filepath):
-            stem, extension = filepath.name.split(".", maxsplit=1)
+            stem, extension = pathlib.Path(filepath).name.split(".", maxsplit=1)
             return {
                 'id': stem
                 , 'type': extension
