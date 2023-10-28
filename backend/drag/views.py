@@ -1,20 +1,15 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from .serializers import QuestionSerializer, FeedbackSerializer
+from .my_llama_index import MyLlamaIndex
+import os
 
-def query_model(question):
-    # Replace this with the actual implementation
-    return {
-        "result": [
-            {'url': 'http://example.com'
-             , 'description': 'Example'
-             , 'sysId': 'ahsoashoa'
-             , 'type': 'PDF'
-             , 'language': 'English'
-            }
-        ]
-    }
+my_llama_index = MyLlamaIndex(
+    os.environ.get("LLAMA_INDEX_DATA_DIRECTORY")
+    , os.environ.get("LLAMA_INDEX_METADATA_PATH"))
 
+def query_model(question, user_id):
+    return my_llama_index.get_response(question, user_id)
 
 def handle_feedback(feedback, previousQuestion, previousResults):
     # Replace this with the actual implementation
