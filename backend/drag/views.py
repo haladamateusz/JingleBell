@@ -4,6 +4,9 @@ from .serializers import QuestionSerializer, FeedbackSerializer
 from .my_llama_index import MyLlamaIndex
 import os
 
+import logging
+logger = logging.getLogger(__name__)
+
 my_llama_index = MyLlamaIndex(
     os.environ.get("LLAMA_INDEX_DATA_DIRECTORY")
     , os.environ.get("LLAMA_INDEX_METADATA_PATH"))
@@ -17,16 +20,19 @@ def handle_feedback(feedback, previousQuestion, previousResults):
 
 class AskQuestionViewSet(viewsets.ViewSet):
     def create(self, request):
+        logger.debug(request)
         serializer = QuestionSerializer(data=request.data)
         if serializer.is_valid():
             data = serializer.validated_data
-            response_data = query_model(data['question'])
+            response_data = query_model(data['question'], data['userId'])
+            logger.debug(response_data)
             return Response(response_data, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class SendFeedbackViewSet(viewsets.ViewSet):
     def create(self, request):
+        logger.debug(request)
         serializer = FeedbackSerializer(data=request.data)
         if serializer.is_valid():
             data = serializer.validated_data

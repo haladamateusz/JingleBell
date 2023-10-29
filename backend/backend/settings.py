@@ -15,7 +15,7 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-os.environ["LLAMA_INDEX_DATA_DIRECTORY"] = "/home/paul/Documents/repertoires/bazel-hack/DATA/v1/dataset"
+os.environ["LLAMA_INDEX_DATA_DIRECTORY"] = "/home/paul/Documents/repertoires/bazel-hack/DATA/v1/index"
 os.environ["LLAMA_INDEX_METADATA_PATH"] = "/home/paul/Documents/repertoires/bazel-hack/DATA/v1/metadata.json"
 
 # Quick-start development settings - unsuitable for production
@@ -127,3 +127,38 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# ----- LOGGING ------ #
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'custom': {
+            'format': '{levelname}[{process}-{thread}] {asctime} [{module}:{funcName}] {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'timed_file': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': 'jinglebell.log',
+            'when': 'midnight',  # Rotate daily at midnight
+            'backupCount': 7,     # Keep up to 7 old log files
+            'formatter': 'custom'
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['timed_file'],
+            'level': 'WARNING',
+            'propagate': False,
+        },
+        'voxmarket': {
+            'handlers': ['timed_file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    },
+}
