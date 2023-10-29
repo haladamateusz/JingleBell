@@ -33,6 +33,7 @@ class AskQuestionViewSet(viewsets.ViewSet):
 class SendFeedbackViewSet(viewsets.ViewSet):
     def create(self, request):
         print(request)
+        print(request.data)
         serializer = FeedbackSerializer(data=request.data)
         if serializer.is_valid():
             data = serializer.validated_data
