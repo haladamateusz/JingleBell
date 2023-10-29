@@ -16,6 +16,14 @@ export class VoiceRecognitionService {
     return 'webkitSpeechRecognition' in window;
   }
 
+  handler = (event: any) => {
+    event.stopPropagation();
+    const transcript = event.results[0][0].transcript;
+    this.recognition.stop();
+    this.recognition = undefined;
+    this.lastSpeech.next(transcript);
+  };
+
   startVoiceRecognition() {
     if (this.speechRecognitionApiInBrowser()) {
       const grammar = '#JSGF V1.0;';
@@ -31,28 +39,12 @@ export class VoiceRecognitionService {
       console.log('recognition started');
       this.recognition.start();
 
-      this.recognition.addEventListener(
-        'result',
-        (event: any) => {
-          event.stopPropagation();
-          const transcript = event.results[0][0].transcript;
-          this.recognition.stop();
-          this.recognition = undefined;
-          this.lastSpeech.next(transcript);
-        },
-        { once: true }
-      );
+      this.recognition.addEventListener('result', this.handler, { once: true });
     }
-
-    //
-    // this.recognition.onspeechend = () => {
-    //   console.log('onspeechend');
-    //   console.log('recognition stopped');
-    //   this.recognition.stop();
-    // };
   }
 
   stopVoiceRecognition() {
     this.recognition.stop();
+    this.recognition.removeEventListener('result', this.handler);
   }
 }

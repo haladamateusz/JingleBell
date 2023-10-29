@@ -1,8 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { LlamaResponseResult } from '../../models/llama-response.interface';
-import { BehaviorSubject, Observable, of, tap } from 'rxjs';
-import { LlamaResponseMock } from '../../mocks/LlamaResponse.mock';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { FEEDBACK } from 'src/app/models/feedback.enum';
 
 @Injectable({

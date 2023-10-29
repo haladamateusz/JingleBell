@@ -15,6 +15,7 @@ import { LayoutService } from './service/layout/layout.service';
 import { debounceTime, distinctUntilChanged, exhaustMap, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { VoiceRecognitionService } from './service/voice-recognition/voice-recognition.service';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-root',
@@ -27,7 +28,8 @@ import { VoiceRecognitionService } from './service/voice-recognition/voice-recog
     MatIconModule,
     FormsModule,
     MatTableModule,
-    ShortenPipe
+    ShortenPipe,
+    MatProgressSpinnerModule
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
@@ -60,6 +62,7 @@ export class AppComponent implements OnInit {
   smallScreen = true;
   recordingStarted = false;
   speechApiExists = false;
+  isLoading = false;
 
   emojiHashMap = new Map<string, string>([
     ['English', '🇺🇸'],
@@ -67,13 +70,7 @@ export class AppComponent implements OnInit {
     ['German', '🇩🇪']
   ]);
 
-  constructor(public cdr: ChangeDetectorRef) {}
-
   ngOnInit() {
-    console.log(
-      'speechRecognition API exists',
-      this.voiceRecognitionService.speechRecognitionApiInBrowser()
-    );
     this.speechApiExists = this.voiceRecognitionService.speechRecognitionApiInBrowser();
 
     this.voiceRecognitionService.lastSpeech
@@ -81,58 +78,48 @@ export class AppComponent implements OnInit {
         debounceTime(500),
         distinctUntilChanged(),
         tap((speech: string) => {
-          console.log('voiceRecognitionObserver', speech);
-
           this.question = speech.charAt(0).toUpperCase() + speech.slice(1) + '?';
         }),
         exhaustMap(() => this.llamaService.askQuestion(this.question, this.sessionId))
       )
       .subscribe(response => {
-        console.log('how many times are we here?');
         this.dataSource.data = response.result;
         this.showFeedback = true;
-
+        this.isLoading = false;
         this.recordingStarted = !this.recordingStarted;
       });
 
-    // this.layoutObserver.subscribe((isSmallScreen: boolean) => {
-    //   if (isSmallScreen) {
-    //     this.visibleCharacters = 60;
-    //     this.smallScreen = true;
-    //     this.displayedColumns = ['description', 'language', 'url'];
-    //   } else {
-    //     this.visibleCharacters = 200;
-    //     this.smallScreen = false;
-    //     this.displayedColumns = ['description', 'type', 'language', 'url'];
-    //   }
-    // });
+    this.layoutObserver.subscribe((isSmallScreen: boolean) => {
+      if (isSmallScreen) {
+        this.visibleCharacters = 60;
+        this.smallScreen = true;
+        this.displayedColumns = ['description', 'language', 'url'];
+      } else {
+        this.visibleCharacters = 200;
+        this.smallScreen = false;
+        this.displayedColumns = ['description', 'type', 'language', 'url'];
+      }
+    });
   }
 
-  startRecording(): void {
-    // if (this.isLoading) return;
+  toggleRecording(): void {
     if (!this.recordingStarted) {
-      this.recordingStarted = true;
       this.voiceRecognitionService.startVoiceRecognition();
+    } else {
+      this.voiceRecognitionService.stopVoiceRecognition();
     }
-    // switch (this.recordingStarted) {
-    //   case true:
-    //     this.recordingStarted = false;
-    //     console.log('stop audio');
-    //     this.voiceRecognitionService.stopVoiceRecognition();
-    //     break;
-    //   case false:
-    //     this.recordingStarted = true;
-    //     console.log('record audio');
-    //     this.voiceRecognitionService.startVoiceRecognition();
-    //     break;
-    // }
+
+    this.isLoading = !this.isLoading;
+    this.recordingStarted = !this.recordingStarted;
   }
 
   sendQuestion(): void {
+    this.isLoading = true;
     this.llamaService.askQuestion(this.question, this.sessionId).subscribe({
       next: (response: LlamaResponseResult) => {
         this.dataSource.data = response.result;
         this.showFeedback = true;
+        this.isLoading = false;
       }
     });
   }
@@ -141,7 +128,6 @@ export class AppComponent implements OnInit {
     this.llamaService.sendFeedback(feedback, this.sessionId).subscribe(() => {
       this.showFeedback = false;
       this.showDetailedNegativeFeedback = false;
-      // this.cdr.detectChanges();
     });
   }
 }

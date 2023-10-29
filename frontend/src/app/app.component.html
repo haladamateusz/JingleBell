@@ -4,12 +4,11 @@
   </mat-toolbar>
 </p>
 
-
 <main>
   <div class="container">
     <div class="row">
       <div class="offset-md-3 mt-5 col-md-6 text-center">
-        <form  class="example-form mt-3">
+        <form class="example-form mt-3">
           <mat-form-field color="primary" class="example-full-width">
             <mat-label>Question</mat-label>
             <input
@@ -20,18 +19,20 @@
 
             <mat-icon
               *ngIf="speechApiExists"
-              (click)="startRecording()"
+              (click)="toggleRecording()"
               matIconSuffix
               class="audio"
               >{{ recordingStarted ? 'pause' : 'mic' }}</mat-icon
             >
           </mat-form-field>
-          <button (click)="sendQuestion()" color="primary" mat-raised-button class="text-white">Submit</button>
+          <button (click)="sendQuestion()" color="primary" mat-raised-button class="text-white">
+            Submit
+          </button>
         </form>
       </div>
     </div>
   </div>
-  <ng-container *ngIf="dataSource.data.length">
+  <ng-container *ngIf="dataSource.data.length && !isLoading">
     <div class="container my-5">
       <div class="row">
         <div class="offset-md-2 col-md-8">
@@ -127,6 +128,16 @@
           </div>
         </div>
       </ng-container>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="isLoading">
+    <div class="container">
+      <div class="row mt-5">
+        <div class="d-flex justify-content-center">
+          <mat-spinner diameter="100"></mat-spinner>
+        </div>
+      </div>
     </div>
   </ng-container>
 </main>
