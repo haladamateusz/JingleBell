@@ -16,6 +16,7 @@ import { debounceTime, distinctUntilChanged, exhaustMap, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { VoiceRecognitionService } from './service/voice-recognition/voice-recognition.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-root',
@@ -29,7 +30,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     FormsModule,
     MatTableModule,
     ShortenPipe,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatCardModule
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
@@ -64,6 +66,8 @@ export class AppComponent implements OnInit {
   speechApiExists = false;
   isLoading = false;
 
+  answer = '';
+
   emojiHashMap = new Map<string, string>([
     ['English', '🇺🇸'],
     ['French', '🇫🇷'],
@@ -82,8 +86,9 @@ export class AppComponent implements OnInit {
         }),
         exhaustMap(() => this.llamaService.askQuestion(this.question, this.sessionId))
       )
-      .subscribe(response => {
+      .subscribe((response: LlamaResponseResult) => {
         this.dataSource.data = response.result;
+        this.answer = response.answer;
         this.showFeedback = true;
         this.isLoading = false;
         this.recordingStarted = !this.recordingStarted;
@@ -118,6 +123,7 @@ export class AppComponent implements OnInit {
     this.llamaService.askQuestion(this.question, this.sessionId).subscribe({
       next: (response: LlamaResponseResult) => {
         this.dataSource.data = response.result;
+        this.answer = response.answer;
         this.showFeedback = true;
         this.isLoading = false;
       }

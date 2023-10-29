@@ -8,27 +8,37 @@
   <div class="container">
     <div class="row">
       <div class="offset-md-3 mt-5 col-md-6 text-center">
-        <form class="example-form mt-3">
-          <mat-form-field color="primary" class="example-full-width">
-            <mat-label>Question</mat-label>
-            <input
-              name="question"
-              [(ngModel)]="question"
-              matInput
-              placeholder="Type what are you looking for ex. Printing" />
+        <mat-card>
+          <mat-card-content>
+            <form class="example-form mt-3">
+              <mat-form-field class="example-full-width">
+                <mat-label>Question</mat-label>
+                <input
+                  name="question"
+                  [(ngModel)]="question"
+                  matInput
+                  placeholder="Type what are you looking for ex. Printing" />
 
-            <mat-icon
-              *ngIf="speechApiExists"
-              (click)="toggleRecording()"
-              matIconSuffix
-              class="audio"
-              >{{ recordingStarted ? 'pause' : 'mic' }}</mat-icon
-            >
-          </mat-form-field>
-          <button (click)="sendQuestion()" color="primary" mat-raised-button class="text-white">
-            Submit
-          </button>
-        </form>
+                <mat-icon
+                  *ngIf="speechApiExists"
+                  (click)="toggleRecording()"
+                  matIconSuffix
+                  class="audio"
+                  >{{ recordingStarted ? 'pause' : 'mic' }}</mat-icon
+                >
+              </mat-form-field>
+              <p>
+                <button
+                  (click)="sendQuestion()"
+                  color="primary"
+                  mat-raised-button
+                  class="text-white">
+                  Submit
+                </button>
+              </p>
+            </form>
+          </mat-card-content>
+        </mat-card>
       </div>
     </div>
   </div>
@@ -36,6 +46,7 @@
     <div class="container my-5">
       <div class="row">
         <div class="offset-md-2 col-md-8">
+          <p> Answer: {{ answer }}</p>
           <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
             <ng-container matColumnDef="description">
               <th mat-header-cell *matHeaderCellDef>Short description</th>
@@ -79,7 +90,7 @@
       </div>
       <ng-container *ngIf="showFeedback">
         <div class="row mt-5">
-          <div class="offset-md-4 col-md-4 text-center">
+          <div class="offset-md-4 mt-5 col-md-4 text-center">
             <p>Are you satisfied with the results?</p>
           </div>
           <div class="offset-md-4 col-md-2 my-2">
@@ -105,7 +116,7 @@
 
       <ng-container *ngIf="showDetailedNegativeFeedback">
         <div class="row my-5">
-          <div class="offset-md-4 col-md-4 text-center">
+          <div class="offset-md-4 mt-5 col-md-4 text-center">
             <p>What went wrong?</p>
           </div>
           <div class="col-6 offset-md-3 col-md-3">
