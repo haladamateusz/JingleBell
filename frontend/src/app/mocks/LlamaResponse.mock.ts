@@ -26,5 +26,7 @@ export const LlamaResponseMock: LlamaResponseResult = {
       sysId: 'pdf3',
       url: 'https://www.bellfoodgroup.com/fr/downloadfile/bell-food-group-politique-de-bien-etre-animal/?fileid=649d355acbf20'
     }
-  ]
+  ],
+  answer:
+    'Some mocked answer, no idea how long it should be, but it should be atleast 200 characters long'
 };

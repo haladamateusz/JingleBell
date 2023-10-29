@@ -1,13 +1,15 @@
 <p class="mb-0">
   <mat-toolbar color="primary">
-    <h1>{{ title }}</h1>
+    <h1 class="fw-bold">{{ title }}</h1>
   </mat-toolbar>
 </p>
+
+
 <main>
   <div class="container">
     <div class="row">
       <div class="offset-md-3 mt-5 col-md-6 text-center">
-        <form (ngSubmit)="sendQuestion()" class="example-form mt-3">
+        <form  class="example-form mt-3">
           <mat-form-field color="primary" class="example-full-width">
             <mat-label>Question</mat-label>
             <input
@@ -15,14 +17,21 @@
               [(ngModel)]="question"
               matInput
               placeholder="Type what are you looking for ex. Printing" />
+
+            <mat-icon
+              *ngIf="speechApiExists"
+              (click)="startRecording()"
+              matIconSuffix
+              class="audio"
+              >{{ recordingStarted ? 'pause' : 'mic' }}</mat-icon
+            >
           </mat-form-field>
-          <button type="submit" color="primary" mat-raised-button class="text-white">Submit</button>
+          <button (click)="sendQuestion()" color="primary" mat-raised-button class="text-white">Submit</button>
         </form>
       </div>
     </div>
   </div>
-
-  <ng-container *ngIf="dataSource.length">
+  <ng-container *ngIf="dataSource.data.length">
     <div class="container my-5">
       <div class="row">
         <div class="offset-md-2 col-md-8">
@@ -72,7 +81,7 @@
           <div class="offset-md-4 col-md-4 text-center">
             <p>Are you satisfied with the results?</p>
           </div>
-          <div class="offset-md-5 col-md-1 my-2">
+          <div class="offset-md-4 col-md-2 my-2">
             <button
               (click)="sendFeedback(FEEDBACK.OKAY)"
               color="accent"
@@ -81,7 +90,7 @@
               <mat-icon class="me-0" fontIcon="thumb_up"></mat-icon>
             </button>
           </div>
-          <div class="col-md-1 my-2">
+          <div class="col-md-2 my-2">
             <button
               (click)="showFeedback = false; showDetailedNegativeFeedback = true"
               color="primary"
@@ -98,20 +107,20 @@
           <div class="offset-md-4 col-md-4 text-center">
             <p>What went wrong?</p>
           </div>
-          <div class="offset-md-4 col-md-2">
+          <div class="col-6 offset-md-3 col-md-3">
             <button
               (click)="sendFeedback(FEEDBACK.BAD_DOCUMENTS)"
               color="primary"
-              mat-stroked-button
+              mat-raised-button
               class="text-right w-100 my-2">
               Bad Documents
             </button>
           </div>
-          <div class="col-md-2">
+          <div class="col-6 col-md-3">
             <button
               (click)="sendFeedback(FEEDBACK.BAD_GPT)"
               color="primary"
-              mat-stroked-button
+              mat-raised-button
               class="w-100 my-2">
               Bad GPT results
             </button>

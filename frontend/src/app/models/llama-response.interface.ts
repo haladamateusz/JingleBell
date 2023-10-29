@@ -1,5 +1,6 @@
 export interface LlamaResponseResult {
   result: LlamaResponse[];
+  answer: string;
 }
 
 export interface LlamaResponse {

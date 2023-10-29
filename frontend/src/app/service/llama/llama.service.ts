@@ -14,37 +14,29 @@ export class LlamaService {
   private lastResults = new BehaviorSubject<LlamaResponseResult>({} as LlamaResponseResult);
 
   askQuestion(question: string, userId: string): Observable<LlamaResponseResult> {
-    console.log('endpoint: /askQuestion');
-    console.log('body', { question, userId });
-    // return of(LlamaResponseMock).pipe(
+    // return of({ ...LlamaResponseMock, question, userId }).pipe(
     //   tap(data => {
     //     this.lastResults.next(data);
     //     this.lastQuestionAsked.next(question);
     //   })
     // );
-    return this.httpClient.post<LlamaResponseResult>('http://127.0.0.1:8000/askQuestion/', { question, userId }).pipe(
+    return this.httpClient
+      .post<LlamaResponseResult>('http://127.0.0.1:8000/askQuestion/', { question, userId })
+      .pipe(
         tap(data => {
           this.lastResults.next(data);
           this.lastQuestionAsked.next(question);
         })
       );
-    }
+  }
 
   sendFeedback(feedback: FEEDBACK, userId: string): Observable<boolean> {
-    console.log('endpoint: /sendFeedback');
-    console.log('body', {
+    // return of(true);
+    return this.httpClient.post<boolean>('http://127.0.0.1:8000/sendFeedback/', {
       feedback,
       userId,
-      question: this.lastQuestionAsked.getValue(),
-      results: this.lastResults.getValue()
+      previousQuestion: this.lastQuestionAsked.getValue(),
+      previousResults: this.lastResults.getValue()
     });
-    // return of(true);
-    return this.httpClient.post<boolean>('http://127.0.0.1:8000/sendFeedback/'
-                                         , {
-                                          feedback,
-                                          userId,
-                                          previousQuestion: this.lastQuestionAsked.getValue(),
-                                          previousResults: this.lastResults.getValue()
-                                        });
   }
 }
