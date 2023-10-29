@@ -61,6 +61,98 @@ type SubQuestionItem = {
   subQuestionIndex: number
 };
 
+type ChunkItem = {
+  content: string,
+  chunkIndex: number,
+  url: string
+};
+
+const SubProcessDisplayNew: React.FC<SubProcessDisplayProps> = ({
+  subProcesses,
+  isOpen,
+  toggleOpen,
+  messageId,
+  documents,
+  showSpinner = true,
+}) => {
+  const subQuestions: ChunkItem[] = [];
+  subProcesses?.forEach((subProcess, chunkIndex) => {
+    if (subProcess.url) {
+      subQuestions.push({
+        content: subProcess.content,
+        chunkIndex,
+        url: subProcess.url,
+      });
+    } else {
+      subQuestions.push({
+        content: subProcess.content,
+        chunkIndex,
+        url: "",
+      });
+    }
+  });
+  console.log("SubQuestionItem :", subQuestions.length);
+  return (
+    <div key={`${messageId}-sub-process`} className="mt-4 w-full rounded ">
+      <div
+        className="flex w-max cursor-pointer items-center rounded p-1 font-nunito text-sm text-gray-90 hover:bg-gray-00"
+        onClick={() => toggleOpen()}
+      >
+        View progress
+        <div className="px-3 py-2">
+          {isOpen ? (
+            <PiCaretDownBold />
+          ) : (
+            <PiCaretDownBold className="-rotate-90" />
+          )}
+        </div>
+      </div>
+      {isOpen && (
+        <>
+          <div className="ml-4 border-l border-l-gray-30 pb-1 pl-4 font-nunito text-[11px] font-light text-gray-60">
+            <div>Question Received</div>
+            {subQuestions.length > 0 && (
+                <div
+                  key={`${messageId}-sub-process`}
+                  className="text-gray-60"
+                >
+                  <div>
+                    {subQuestions.map(({content, chunkIndex, url}) => {
+                      return (
+                        <div
+                          key={`${messageId}-${chunkIndex}`}
+                        >
+                          Retrieved document #{chunkIndex + 1}{" "}
+                          <div className="flex w-11/12 flex-col rounded border">
+                            <div className="rounded-t border-b bg-gray-00 p-2 font-bold text-gray-90">
+                              {content}
+                            </div>
+                              <div className="overflow-scroll p-2 text-[11px] font-semibold text-red-500">
+                                <a href={url} target="_blank" rel="noopener noreferrer">
+                                  Open page
+                                </a>
+                              </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )
+            }
+          </div>
+          {showSpinner && (
+            <div className="ml-2.5 mt-1 ">
+              <LoadingSpinner />
+            </div>
+          )}
+          <div className="pb-2"></div>
+        </>
+      )}
+    </div>
+  );
+};
+
 const SubProcessDisplay: React.FC<SubProcessDisplayProps> = ({
   subProcesses,
   isOpen,
@@ -87,6 +179,7 @@ const SubProcessDisplay: React.FC<SubProcessDisplayProps> = ({
       });
     }
   });
+  console.log("SubQuestionItem :", subQuestions.length);
   return (
     <div key={`${messageId}-sub-process`} className="mt-4 w-full rounded ">
       <div
@@ -204,7 +297,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({ message, showLoading }) => {
         <div className="flex border-b-2 pb-4">
           <div className="w-1/5"></div>
           <div className="w-4/5">
-            <SubProcessDisplay
+            <SubProcessDisplayNew
               key={`${message.id}-loading-sub-process`}
               messageId={message.id}
               subProcesses={[]}
@@ -249,7 +342,7 @@ const AssistantDisplay: React.FC<AssistantDisplayProps> = ({
 
   useEffect(() => {
     if (isMessageSuccessful) {
-      setIsExpanded(false);
+      setIsExpanded(true);
     }
   }, [isMessageSuccessful]);
   return (
@@ -259,7 +352,7 @@ const AssistantDisplay: React.FC<AssistantDisplayProps> = ({
         <div className="w-4/5">
           {!isMessageError && (
             <div className="flex flex-col">
-              <SubProcessDisplay
+              <SubProcessDisplayNew
                 key={`${message.id}-sub-process`}
                 subProcesses={message.sub_processes || []}
                 isOpen={isExpanded}
