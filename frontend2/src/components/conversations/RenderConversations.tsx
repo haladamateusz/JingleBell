@@ -29,6 +29,7 @@ const HandleFeedback: React.FC<FeedbackProps> = ({
   userId,
 }) => {
 
+  const [feedbackGiven, setFeedbackGiven] = useState(false);
   const handleFeedbackOkay = () => {
     handleFeedback("thumbsUp");
   };
@@ -74,21 +75,28 @@ const HandleFeedback: React.FC<FeedbackProps> = ({
         // Handle errors here
         console.error("Error sending feedback:", error);
       });
-  };
+      setFeedbackGiven(true);
+    };
 
   return (
     <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-      <div className="flex items-center mt-2">
-        {/* <div className="text-[11px] text-gray-60">
-          Note: Use thumbs up and down to rate the displayed response.
-        </div> */}
-        <button onClick={handleFeedbackOkay} className="pr-2">
-          <FontAwesomeIcon icon={faThumbsUp} style={{ fontSize: '24px' }}/>
-        </button>
-        <button onClick={handleFeedbackNotOkay} className="pr-2">
-          <FontAwesomeIcon icon={faThumbsDown} style={{ fontSize: '24px' }} />
-        </button>
-      </div>
+      {feedbackGiven ? (
+        <p  className="text-xs text-gray-60" id="thankYou" style={{ color: '#000080' }}>
+          Thank you!
+        </p>
+      ) : (
+        <div className="flex items-center mt-2">
+          {/* <div className="text-[11px] text-gray-60">
+            Note: Use thumbs up and down to rate the displayed response.
+          </div> */}
+          <button onClick={handleFeedbackOkay} className="pr-2">
+            <FontAwesomeIcon icon={faThumbsUp} style={{ fontSize: '24px' }} />
+          </button>
+          <button onClick={handleFeedbackNotOkay} className="pr-2">
+            <FontAwesomeIcon icon={faThumbsDown} style={{ fontSize: '24px' }} />
+          </button>
+        </div>
+      )}
     </div>
   );
 };
@@ -546,25 +554,25 @@ export const RenderConversations: React.FC<IRenderConversation> = ({
             <div className="m-auto flex w-full flex-wrap justify-center">
               <button
                 onClick={() =>
-                  setUserMessage("What must be confirmed at the end of the survey to ensure the quality of the test results?")
+                  setUserMessage("How can I open a ticket on ServiceNow ? ")
                 }
                 className="m-1 flex-shrink rounded-full border border-gray-60 px-3 py-1 hover:bg-gray-15"
               >
-                What must be confirmed at the end of the survey to ensure the quality of the test results
+                How can I open a ticket on ServiceNow ? 
               </button>
               <button
-                onClick={() => setUserMessage("What must be confirmed at the end of the survey to ensure the quality of the test results")}
+                onClick={() => setUserMessage("How to create a meeting on teams ?")}
                 className="m-1 flex-shrink rounded-full border border-gray-60 px-3 py-1 hover:bg-gray-15"
               >
-                What must be confirmed at the end of the survey to ensure the quality of the test results?
+                How to create a meeting on teams ?
               </button>
               <button
                 onClick={() =>
-                  setUserMessage("What must be confirmed at the end of the survey to ensure the quality of the test results?")
+                  setUserMessage("How should I connect on SAP ?")
                 }
                 className="m-1 flex-shrink rounded-full border border-gray-60 px-3 py-1 hover:bg-gray-15"
               >
-                What must be confirmed at the end of the survey to ensure the quality of the test results
+                How should I connect on SAP ?
               </button>
             </div>
           </div>
