@@ -111,6 +111,7 @@ export default function Conversation() {
       conversationId, // This should be available in your current scope
       sub_processes: [] as MessageSubProcess[], // Initialize with an empty array if there are no sub-processes
       created_at: new Date(), // Set the current time
+      question: question
     };
   
     // If the 'result' is available and is an array, map it to your MessageSubProcess interface

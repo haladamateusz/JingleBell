@@ -53,6 +53,7 @@ export interface Message extends hasId {
   conversationId: string;
   sub_processes?: MessageSubProcess[];
   created_at: Date;
+  question?: string
 }
 export interface MessageSubProcess extends hasId {
   messageId: string;

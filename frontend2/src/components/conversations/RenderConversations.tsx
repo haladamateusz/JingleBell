@@ -5,16 +5,95 @@ import type { Message, SubQuestion } from "~/types/conversation";
 import { LoadingSpinner } from "~/components/basics/Loading";
 import { PiCaretDownBold } from "react-icons/pi";
 import { HiOutlineChatAlt2 } from "react-icons/hi";
-
 import { usePdfFocus } from "~/context/pdf";
 import { AiFillExclamationCircle, AiOutlineLink } from "react-icons/ai";
 import { SecDocument } from "~/types/document";
 import { borderColors } from "~/utils/colors";
 import { formatDisplayDate } from "~/utils/timezone";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faThumbsUp, faThumbsDown } from "@fortawesome/free-solid-svg-icons";
 
 interface CitationDisplayProps {
   citation: Citation;
 }
+
+interface FeedbackProps {
+  previousQuestion: string | undefined;
+  previousResults: MessageSubProcess[] | undefined; // You can specify the type for previousResults
+  userId: string;
+}
+
+const HandleFeedback: React.FC<FeedbackProps> = ({
+  previousQuestion,
+  previousResults,
+  userId,
+}) => {
+
+  const handleFeedbackOkay = () => {
+    handleFeedback("thumbsUp");
+  };
+
+  const handleFeedbackNotOkay = () => {
+    handleFeedback("thumbsDown");
+  };
+
+  const handleFeedback = (feedbackType: string) => {
+    const endpoint = "http://127.0.0.1:8000/sendFeedback/";
+
+    // Define the feedback value based on the feedbackType
+    const feedback = feedbackType === "thumbsUp" ? "OKAY" : "BAD_GPT";
+
+    // Create the request body
+    const requestBody = {
+      previousQuestion,
+      previousResults,
+      feedback,
+      userId,
+    };
+
+    // Make the POST request
+    fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        // Handle the response if needed
+        return response.json();
+      })
+      .then((data) => {
+        // Handle the data returned from the server if needed
+        console.log("Feedback sent successfully:", data);
+      })
+      .catch((error) => {
+        // Handle errors here
+        console.error("Error sending feedback:", error);
+      });
+  };
+
+  return (
+    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+      <div className="flex items-center mt-2">
+        {/* <div className="text-[11px] text-gray-60">
+          Note: Use thumbs up and down to rate the displayed response.
+        </div> */}
+        <button onClick={handleFeedbackOkay} className="pr-2">
+          <FontAwesomeIcon icon={faThumbsUp} style={{ fontSize: '24px' }}/>
+        </button>
+        <button onClick={handleFeedbackNotOkay} className="pr-2">
+          <FontAwesomeIcon icon={faThumbsDown} style={{ fontSize: '24px' }} />
+        </button>
+      </div>
+    </div>
+  );
+};
+
+
 const CitationDisplay: React.FC<CitationDisplayProps> = ({ citation }) => {
   const { setPdfFocusState } = usePdfFocus();
   const handleCitationClick = (documentId: string, pageNumber: number) => {
@@ -146,7 +225,6 @@ const SubProcessDisplayNew: React.FC<SubProcessDisplayProps> = ({
               <LoadingSpinner />
             </div>
           )}
-          <div className="pb-2"></div>
         </>
       )}
     </div>
@@ -378,13 +456,23 @@ const AssistantDisplay: React.FC<AssistantDisplayProps> = ({
               <p className="relative mb-2 mt-2 pr-3 font-nunito whitespace-pre-wrap font-bold text-gray-90">
                 {message.content}
               </p>
-              <p className="flex items-center justify-start p-1 text-xs text-gray-60">
-                This statement is served to you by JingleBells
-              </p>
+              <div className="flex items-center justify-between p-1">
+                  <p className="text-xs text-gray-60">
+                    This statement is served to you by JingleBells
+                  </p>
+                  <HandleFeedback
+                    previousQuestion={message.question}
+                    previousResults={message.sub_processes}
+                    userId={message.conversationId}
+                  />
+                </div>
             </div>
           </div>
         </>
       )}
+    {/* <div className="flex items-center justify-center">
+      <div className="my-3 w-11/12 border-[.5px]"></div>
+    </div> */}
     </div>
   );
 };
