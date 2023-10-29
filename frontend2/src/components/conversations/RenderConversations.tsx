@@ -458,7 +458,7 @@ const AssistantDisplay: React.FC<AssistantDisplayProps> = ({
               </p>
               <div className="flex items-center justify-between p-1">
                   <p className="text-xs text-gray-60">
-                    This statement is served to you by JingleBells
+                    This statement is served to you by JingleBell
                   </p>
                   <HandleFeedback
                     previousQuestion={message.question}
